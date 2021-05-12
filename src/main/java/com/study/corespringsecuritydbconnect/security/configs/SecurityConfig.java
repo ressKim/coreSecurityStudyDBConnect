@@ -1,12 +1,14 @@
 package com.study.corespringsecuritydbconnect.security.configs;
 
 import com.study.corespringsecuritydbconnect.security.common.FormWebAuthenticationDetailsSource;
+import com.study.corespringsecuritydbconnect.security.factory.UrlResourcesMapFactoryBean;
 import com.study.corespringsecuritydbconnect.security.handler.AjaxAuthenticationFailureHandler;
 import com.study.corespringsecuritydbconnect.security.handler.AjaxAuthenticationSuccessHandler;
 import com.study.corespringsecuritydbconnect.security.handler.FormAccessDeniedHandler;
 import com.study.corespringsecuritydbconnect.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import com.study.corespringsecuritydbconnect.security.provider.AjaxAuthenticationProvider;
 import com.study.corespringsecuritydbconnect.security.provider.FormAuthenticationProvider;
+import com.study.corespringsecuritydbconnect.service.SecurityResourceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -34,6 +36,7 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 @Configuration
 @EnableWebSecurity
@@ -46,6 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationSuccessHandler formAuthenticationSuccessHandler;
     @Autowired
     private AuthenticationFailureHandler formAuthenticationFailureHandler;
+    @Autowired
+    private SecurityResourceService SecurityResourceService;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -69,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
+                .formLogin()    
                 .loginPage("/login")
                 .loginProcessingUrl("/login_proc")
                 .authenticationDetailsSource(formWebAuthenticationDetailsSource)
@@ -149,9 +154,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() {
-        return new UrlFilterInvocationSecurityMetadataSource();
+    public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception{
+        return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject());
     }
 
-
+    private UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {
+        UrlResourcesMapFactoryBean urlResourcesMapFactoryBean = new UrlResourcesMapFactoryBean();
+        urlResourcesMapFactoryBean.setSecurityResourceService(SecurityResourceService);
+        return urlResourcesMapFactoryBean;
+    }
 }
