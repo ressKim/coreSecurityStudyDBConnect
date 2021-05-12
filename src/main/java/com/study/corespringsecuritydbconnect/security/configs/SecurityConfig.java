@@ -4,7 +4,7 @@ import com.study.corespringsecuritydbconnect.security.common.FormWebAuthenticati
 import com.study.corespringsecuritydbconnect.security.handler.AjaxAuthenticationFailureHandler;
 import com.study.corespringsecuritydbconnect.security.handler.AjaxAuthenticationSuccessHandler;
 import com.study.corespringsecuritydbconnect.security.handler.FormAccessDeniedHandler;
-import com.study.corespringsecuritydbconnect.security.metadatasource.UrlFilterInvocationSecurityMetadatsSource;
+import com.study.corespringsecuritydbconnect.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import com.study.corespringsecuritydbconnect.security.provider.AjaxAuthenticationProvider;
 import com.study.corespringsecuritydbconnect.security.provider.FormAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -67,10 +67,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/mypage").hasRole("USER")
-                .antMatchers("/messages").hasRole("MANAGER")
-                .antMatchers("/config").hasRole("ADMIN")
-                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -80,14 +76,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(formAuthenticationSuccessHandler)
                 .failureHandler(formAuthenticationFailureHandler)
                 .permitAll()
-        .and()
+                .and()
                 .exceptionHandling()
 //                .authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
                 .accessDeniedPage("/denied")
                 .accessDeniedHandler(accessDeniedHandler())
-//        .and()
-//                .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
+                .and()
+                .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
         ;
 
         http.csrf().disable();
@@ -110,22 +106,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         return new FormAuthenticationProvider(passwordEncoder());
     }
 
     @Bean
-    public AuthenticationProvider ajaxAuthenticationProvider(){
+    public AuthenticationProvider ajaxAuthenticationProvider() {
         return new AjaxAuthenticationProvider(passwordEncoder());
     }
 
     @Bean
-    public AjaxAuthenticationSuccessHandler ajaxAuthenticationSuccessHandler(){
+    public AjaxAuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
         return new AjaxAuthenticationSuccessHandler();
     }
 
     @Bean
-    public AjaxAuthenticationFailureHandler ajaxAuthenticationFailureHandler(){
+    public AjaxAuthenticationFailureHandler ajaxAuthenticationFailureHandler() {
         return new AjaxAuthenticationFailureHandler();
     }
 
@@ -137,7 +133,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
-
         FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
         filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
         filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
@@ -146,17 +141,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private AccessDecisionManager affirmativeBased() {
-        AffirmativeBased affirmativeBased = new AffirmativeBased(getAccessDecistionVoters());
-        return affirmativeBased;
+        return new AffirmativeBased(getAccessDecisionVoters());
     }
 
-    private List<AccessDecisionVoter<?>> getAccessDecistionVoters() {
+    private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
         return Arrays.asList(new RoleVoter());
     }
 
     @Bean
     public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() {
-        return new UrlFilterInvocationSecurityMetadatsSource();
+        return new UrlFilterInvocationSecurityMetadataSource();
     }
 
 
