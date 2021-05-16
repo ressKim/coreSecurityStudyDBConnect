@@ -8,6 +8,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import javax.annotation.security.PermitAll;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -15,24 +16,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PermitAllFilter extends FilterSecurityInterceptor {
+//활용해보기 - 기본동장에서 응용
     private static final String FILTER_APPLIED = "__spring_security_filterSecurityInterceptor_filterApplied";
-
     private boolean observeOncePerRequest = true;
 
     private List<RequestMatcher> permitAllRequestMatchers = new ArrayList<>();
 
     public PermitAllFilter(String... permitAllResources) {
-        for (String permitAllResource : permitAllResources) {
-            permitAllRequestMatchers.add(new AntPathRequestMatcher(permitAllResource));
+        for (String resource : permitAllResources) {
+            permitAllRequestMatchers.add(new AntPathRequestMatcher(resource));
         }
-
     }
 
     @Override
     protected InterceptorStatusToken beforeInvocation(Object object) {
 
         boolean permitAll = false;
-
         HttpServletRequest request = ((FilterInvocation) object).getRequest();
         for (RequestMatcher requestMatcher : permitAllRequestMatchers) {
             if (requestMatcher.matches(request)) {
@@ -48,11 +47,6 @@ public class PermitAllFilter extends FilterSecurityInterceptor {
         return super.beforeInvocation(object);
     }
 
-    @Override
-    public Class<?> getSecureObjectClass() {
-        return FilterInvocation.class;
-    }
-
     public void invoke(FilterInvocation filterInvocation) throws IOException, ServletException {
         if (isApplied(filterInvocation) && this.observeOncePerRequest) {
             // filter already applied to this request and user wants us to observe
@@ -64,7 +58,7 @@ public class PermitAllFilter extends FilterSecurityInterceptor {
         if (filterInvocation.getRequest() != null && this.observeOncePerRequest) {
             filterInvocation.getRequest().setAttribute(FILTER_APPLIED, Boolean.TRUE);
         }
-        InterceptorStatusToken token = super.beforeInvocation(filterInvocation);
+        InterceptorStatusToken token = beforeInvocation(filterInvocation);
         try {
             filterInvocation.getChain().doFilter(filterInvocation.getRequest(), filterInvocation.getResponse());
         } finally {
