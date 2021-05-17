@@ -49,7 +49,6 @@ public class IpAddressVoter implements AccessDecisionVoter<Object> {
         if (result == ACCESS_DENIED) {
             throw new AccessDeniedException("Invalid IpAddress");
         }
-
         return result;
     }
 }
