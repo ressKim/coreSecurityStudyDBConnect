@@ -104,7 +104,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         return new FormAuthenticationProvider(passwordEncoder());
     }
 
@@ -139,13 +139,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
 
-//        List<AccessDecisionVoter<? extends Object>> accessDecisionVoters = new ArrayList<>();
-//        accessDecisionVoters.add(new IpAddressVoter(securityResourceService));
-//        accessDecisionVoters.add(roleVoter());
-
         List<AccessDecisionVoter<? extends Object>> accessDecisionVoters = new ArrayList<>();
+        //IpCheck 를 먼저 해야 한다.
+        accessDecisionVoters.add(new IpAddressVoter(securityResourceService));
         accessDecisionVoters.add(roleVoter());
-
 
         return accessDecisionVoters;
     }

@@ -1,6 +1,5 @@
 package com.study.corespringsecuritydbconnect.security.init;
 
-import com.study.corespringsecuritydbconnect.domain.entity.RoleHierarchy;
 import com.study.corespringsecuritydbconnect.service.RoleHierarchyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

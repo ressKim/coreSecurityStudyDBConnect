@@ -12,10 +12,9 @@ import java.util.List;
 
 public class IpAddressVoter implements AccessDecisionVoter<Object> {
 
-    private SecurityResourceService securityResourceService;
+    private final SecurityResourceService securityResourceService;
 
     public IpAddressVoter(SecurityResourceService securityResourceService) {
-
         this.securityResourceService = securityResourceService;
     }
 
@@ -32,20 +31,22 @@ public class IpAddressVoter implements AccessDecisionVoter<Object> {
     @Override
     public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
 
-        WebAuthenticationDetails details = (WebAuthenticationDetails)authentication.getDetails();
+        WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
         String remoteAddress = details.getRemoteAddress();
 
         List<String> accessIpList = securityResourceService.getAccessIpList();
 
         int result = ACCESS_DENIED;
 
-        for(String ipAddress : accessIpList){
-            if(remoteAddress.equals(ipAddress)){
+        //ip 허용하는지 체크
+        for (String ipAddress : accessIpList) {
+            if (remoteAddress.equals(ipAddress)) {
+                //허가하면 안되고 ABSTAIN 해야 된다. - 이 이후에 권한을 더 검사하기 때문
                 return ACCESS_ABSTAIN;
             }
         }
 
-        if(result == ACCESS_DENIED){
+        if (result == ACCESS_DENIED) {
             throw new AccessDeniedException("Invalid IpAddress");
         }
 
