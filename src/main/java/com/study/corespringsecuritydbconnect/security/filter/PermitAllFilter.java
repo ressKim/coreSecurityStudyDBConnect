@@ -1,15 +1,12 @@
 package com.study.corespringsecuritydbconnect.security.filter;
 
-import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
 import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import javax.annotation.security.PermitAll;
-import javax.servlet.*;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,6 +55,7 @@ public class PermitAllFilter extends FilterSecurityInterceptor {
         if (filterInvocation.getRequest() != null && this.observeOncePerRequest) {
             filterInvocation.getRequest().setAttribute(FILTER_APPLIED, Boolean.TRUE);
         }
+        //super 제거해서, custom 한 beforeInvocation 으로 가게 설정
         InterceptorStatusToken token = beforeInvocation(filterInvocation);
         try {
             filterInvocation.getChain().doFilter(filterInvocation.getRequest(), filterInvocation.getResponse());
