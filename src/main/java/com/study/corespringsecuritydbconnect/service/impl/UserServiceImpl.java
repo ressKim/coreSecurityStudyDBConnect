@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void createUser(Account account){
+    public void createUser(Account account) {
 
         Role role = roleRepository.findByRoleName("ROLE_USER");
         Set<Role> roles = new HashSet<>();
@@ -45,12 +45,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void modifyUser(AccountDto accountDto){
+    public void modifyUser(AccountDto accountDto) {
 
         ModelMapper modelMapper = new ModelMapper();
         Account account = modelMapper.map(accountDto, Account.class);
 
-        if(accountDto.getRoles() != null){
+        if (accountDto.getRoles() != null) {
             Set<Role> roles = new HashSet<>();
             accountDto.getRoles().forEach(role -> {
                 Role r = roleRepository.findByRoleName(role);
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Secured("ROLE_MANAGER")
+    @Secured("ROLE_USER")
     public void order() {
         //secured 가 처리 다 되고나면 이 안으로 접근이 가능함.
         System.out.println("order");
