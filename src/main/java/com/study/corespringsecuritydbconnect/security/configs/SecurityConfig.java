@@ -3,11 +3,8 @@ package com.study.corespringsecuritydbconnect.security.configs;
 import com.study.corespringsecuritydbconnect.security.common.FormWebAuthenticationDetailsSource;
 import com.study.corespringsecuritydbconnect.security.factory.UrlResourcesMapFactoryBean;
 import com.study.corespringsecuritydbconnect.security.filter.PermitAllFilter;
-import com.study.corespringsecuritydbconnect.security.handler.AjaxAuthenticationFailureHandler;
-import com.study.corespringsecuritydbconnect.security.handler.AjaxAuthenticationSuccessHandler;
 import com.study.corespringsecuritydbconnect.security.handler.FormAccessDeniedHandler;
 import com.study.corespringsecuritydbconnect.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
-import com.study.corespringsecuritydbconnect.security.provider.AjaxAuthenticationProvider;
 import com.study.corespringsecuritydbconnect.security.provider.FormAuthenticationProvider;
 import com.study.corespringsecuritydbconnect.security.voter.IpAddressVoter;
 import com.study.corespringsecuritydbconnect.service.SecurityResourceService;
@@ -25,7 +22,6 @@ import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,14 +29,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration

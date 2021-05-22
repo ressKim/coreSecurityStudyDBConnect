@@ -11,6 +11,7 @@ public class AopPointcutService {
 
     public void notSecured() {
         System.out.println("AopPointcutService.notSecured");
+
     }
 
 }
