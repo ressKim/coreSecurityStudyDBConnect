@@ -14,6 +14,7 @@ import java.security.Principal;
 public class AopSecurityController {
 
     private final AopMethodService aopMethodService;
+    private final AopPointcutService aopPointcutService;
 
     //securityConfig 에서 밑에 어노테이션을 설정 해 줘야 동작을 한다.
     //@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
@@ -29,6 +30,15 @@ public class AopSecurityController {
     public String methodSecured(Model model) {
         aopMethodService.methodSecured();
         model.addAttribute("method", "Success MethodSecured");
+        return "aop/method";
+    }
+
+    @GetMapping("/pointcutSecured")
+    public String pointcutSecured(Model model) {
+        aopPointcutService.notSecured();
+        aopPointcutService.pointcutSecured();
+
+        model.addAttribute("pointcut", "Success PointcutSecured");
         return "aop/method";
     }
 
